@@ -1,36 +1,27 @@
-# Build
+# Docker chrome image
+
+Image running Google Chrome browser.
+
+## Building
 
 In order to build this image run:
 ```
 docker build --rm -t pawelkorus/chrome .
 ```
 
-# Run
+## Running
 
-## Simple execution
-The simple command to run container:
+Basic run command that exposes http vnc client on port 5800:
 ```
-docker run --rm -p 5800:5800 pawelkorus/chrome
-```
-After some time you can open your browser and use `http://localhost:5800` to ineract with the chrome browser.
-
-## With audio enabled
-In order to enable audio, first create pulse audio socket:
-```
-SPOTIFYSOCKET=`pactl load-module module-native-protocol-unix auth-anonymous=1 socket=/tmp/.docker-pulse-socket`
+docker run --rm -it --device /dev/snd -v<data_directory>:/config -p 5800:5800 pawelkorus/chrome
 ```
 
-The you can run chrome container using following command
+In case you want to connect using vnc client you need to expose port 5900:
 ```
-docker run --rm -p 5800:5800 -v /tmp/.docker-pulse-socket:/tmp/.pulse-socket pawelkorus/chrome
-```
+docker run --rm -it --device /dev/snd -v<data_directory>:/config -p 5900:5900 pawelkorus/chrome
 
-After chrome container has finished you should close the socker:
+In case audio group ids are different between host and guest machines
+you should pass host audio group id using `AUDIO_GROUP_ID`:
 ```
-pactl unload-module $SPOTIFYSOCKET
+docker run --rm -it --device /dev/snd -v <data_directory>:/config -p 5800:5800 -e AUDIO_GROUP_ID=<host_-_audio_group_id> pawelkorus/chrome
 ```
-# Inside container
-
-## Pulseaudio
-
-when running as non root user keep in mind that you have to export PULSE_RUNTIME_PATH. Otherwise pulse deamon will use /tmp/run/ which is not permitted to normal user.
