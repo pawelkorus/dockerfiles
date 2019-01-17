@@ -11,11 +11,10 @@ docker build --rm -t pawelkorus/wine-heroes3 .
 
 ## Running
 
-Before running this container make sure that all executables are present in directory mounted as `/config` volume. By default, container init script looks for two executables:
+In case game directory is not detected in directory mounted as `/config` volume, container init script looks for setup executables and executes them. Make sure that these files are present in dicrectory mounted as `/config` volume: 
 1. setup_homm3_complete_2.0.0.16.exe (required)
 2. patch_homm3_complete_2.0.1.17.exe (optional)
- 
-In case game is not installed in directory mounted as `/config` volume setup executables are executed first. Open vnc client and follow instuctions on screen as setup process is manual. You shouldn't change any default values during setup, just click next button.
+After running container for the first time, remember to open vnc client and follow instuctions on screen as setup process is manual. You shouldn't change any default values during setup, just click next button. After game and patch are installed, winecfg will be executed. You need to go to `Graphics` tab and tick `Emulate a virtual desktop`. Resolution should be set to `800x600`.
 
 Basic run command that exposes http vnc client on port 5800:
 ```
